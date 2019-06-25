@@ -23,7 +23,6 @@ class RomanCalculator extends RomanConverter {
     void run() {
         try {
             input();
-            System.out.println(Arrays.toString(nums));
             int result = operation();
             if (isRoman) {
                 System.out.println(toConvert(result));
