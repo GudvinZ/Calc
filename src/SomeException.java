@@ -1,5 +1,12 @@
-class SomeException extends Exception{
+class SomeException extends Exception {
+    private String message;
+
     SomeException(String message) {
-        super(message);
+        this.message = message;
+    }
+
+    @Override
+    public String getMessage() {
+        return message;
     }
 }

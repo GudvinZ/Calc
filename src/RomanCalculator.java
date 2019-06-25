@@ -31,10 +31,7 @@ class RomanCalculator extends RomanConverter {
                 System.out.println(result);
             }
         }
-        catch (IncorrectInputException e) {
-            System.out.println(e.getMessage());
-        }
-        catch (SomeException e) {
+        catch (IncorrectInputException | SomeException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -59,14 +56,14 @@ class RomanCalculator extends RomanConverter {
     }
 
     private void check(String a, String b) throws IncorrectInputException {
-        if(checkArabic(a)) {
-            if(checkArabic(b)) {
+        if (checkArabic(a)) {
+            if (checkArabic(b)) {
                 nums[0] = Integer.parseInt(a);
                 nums[1] = Integer.parseInt(b);
             } else {
                 throw new IncorrectInputException("both numbers must be either roman or arab");
             }
-        } else if(checkRoman(a)&& checkRoman(b)) {
+        } else if (checkRoman(a) && checkRoman(b)) {
             isRoman();
             nums[0] = toConvert(a);
             nums[1] = toConvert(b);
@@ -95,16 +92,16 @@ class RomanCalculator extends RomanConverter {
         return false;
     }
 
-    private int operation() throws ArithmeticException, SomeException{
+    private int operation() throws SomeException {
         switch (operation) {
             case '+':
-                return nums[0]+nums[1];
+                return nums[0] + nums[1];
             case '-':
-                return nums[0]-nums[1];
+                return nums[0] - nums[1];
             case '*':
-                return nums[0]*nums[1];
+                return nums[0] * nums[1];
             case '/':
-                return nums[0]/nums[1];
+                return nums[0] / nums[1];
         }
         throw new SomeException("something unexpected happened");
     }
