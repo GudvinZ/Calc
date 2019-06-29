@@ -3,10 +3,14 @@ import java.util.Map;
 
 class RomanConverter {
 
-    private static final int[] nums = {100, 90, 50, 40, 10, 9, 5, 4, 1};
+    private static final int[] nums = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
     private static final Map<Integer, String> romanNums = new HashMap<>();
 
     static {
+        romanNums.put(1000, "M");
+        romanNums.put(900, "CM");
+        romanNums.put(500, "D");
+        romanNums.put(400, "CD");
         romanNums.put(100, "C");
         romanNums.put(90, "XC");
         romanNums.put(50, "L");

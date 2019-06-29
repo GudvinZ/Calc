@@ -1,20 +1,17 @@
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Scanner;
 
-class RomanCalculator extends RomanConverter {
+class RomanCalculator extends Operations {
 
     RomanCalculator() {
-        this.nums = new int[2];
-        String[] araPatterns = {"[1-9]{1}", "10"};
-        String[] romanPatterns = {"[IV]{1}[I]?[I]?", "[I]?[VX]{1}", "VIII"};
+        String[] araPatterns = {"-?[1-9]{1}[0-9]{0,3}", "0"};
+        String[] romanPatterns = {"M{0,3}(CM|DC{0,3}|CD|C{1,3})?(XC|LX{0,3}|XL|X{1,3})?(IX|VI{0,3}|IV|I{1,3})?"};
         Patterns.setPatternsArabic(araPatterns);
         Patterns.setPatternsRoman(romanPatterns);
     }
 
-    private static char[] operations = {'+', '-', '*', '/'};
-    private char operation;
-    private int[] nums;
-    private boolean isRoman = false;
+    private boolean isRoman;
+    private boolean firstCheck=true;
 
     private void isRoman() {
         isRoman = true;
@@ -22,50 +19,73 @@ class RomanCalculator extends RomanConverter {
 
     void run() {
         try {
-            input();
-            int result = operation();
+            int result = operations(input());
             if (isRoman) {
-                System.out.println(toConvert(result));
+                System.out.println(RomanConverter.toConvert(result));
             } else {
                 System.out.println(result);
             }
+        }
+        catch (ArithmeticException e) {
+            System.out.println("dividing by zero");
         }
         catch (IncorrectInputException | SomeException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    private void input() throws IncorrectInputException {
+    private ArrayList<Integer> input() throws IncorrectInputException {
         //input
         Scanner in = new Scanner(System.in);
         String s = in.nextLine();
         s = s.replaceAll(" ", "");
         //check
-        int n;
-        for (char a :
-                operations) {
-            n = s.indexOf(a);
-            if (n != -1) {
-                operation = s.substring(n, n + 1).charAt(0);
-                check(s.substring(0, n), s.substring(n + 1));
-                return;
+        ArrayList<Integer> elements = new ArrayList<>();
+        int k = 0;
+        char[] c = s.toCharArray();
+        for (int n = 0; n < c.length; n++) {
+            for (char a :
+                    Operations.get()) {
+                if(c[n]==a) {
+                    if (n == 0) {
+                        throw new IncorrectInputException("Incorrect input");
+                    } else {
+                        elements.add(check(s.substring(k, n)));
+                        elements.add((int) s.substring(n, n + 1).charAt(0));
+                        k = n + 1;
+                    }
+                }
             }
         }
-        throw new IncorrectInputException("Incorrect input");
+            if (k == 0) {
+                throw new IncorrectInputException("Incorrect input");
+            } else {
+                elements.add(check(s.substring(k)));
+                return elements;
+            }
     }
 
-    private void check(String a, String b) throws IncorrectInputException {
-        if (checkArabic(a)) {
-            if (checkArabic(b)) {
-                nums[0] = Integer.parseInt(a);
-                nums[1] = Integer.parseInt(b);
+    private int check(String a) throws IncorrectInputException {
+        if(firstCheck) {
+            if(checkRoman(a)){
+                isRoman();
+                firstCheck=false;
+                return RomanConverter.toConvert(a);
+            } else if (checkArabic(a)) {
+                firstCheck=false;
+                return Integer.parseInt(a);
             } else {
-                throw new IncorrectInputException("both numbers must be either roman or arab");
+                throw new IncorrectInputException("Incorrect input");
             }
-        } else if (checkRoman(a) && checkRoman(b)) {
-            isRoman();
-            nums[0] = toConvert(a);
-            nums[1] = toConvert(b);
+        }
+        if(isRoman) {
+            if (checkRoman(a)) {
+                return RomanConverter.toConvert(a);
+            } else {
+                throw new IncorrectInputException("all numbers must be either roman or arab");
+            }
+        } else if (checkArabic(a)) {
+            return Integer.parseInt(a);
         } else {
             throw new IncorrectInputException("Incorrect input");
         }
@@ -91,17 +111,5 @@ class RomanCalculator extends RomanConverter {
         return false;
     }
 
-    private int operation() throws SomeException {
-        switch (operation) {
-            case '+':
-                return nums[0] + nums[1];
-            case '-':
-                return nums[0] - nums[1];
-            case '*':
-                return nums[0] * nums[1];
-            case '/':
-                return nums[0] / nums[1];
-        }
-        throw new SomeException("something unexpected happened");
-    }
+
 }
